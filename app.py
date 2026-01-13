@@ -3,39 +3,52 @@ import pandas as pd
 import os
 from main import run_scraper  # Your scraping logic wrapped as a function
 
+st.set_page_config(page_title="Wilsonart Warehouse Availability", layout="wide")
 st.title("Wilsonart Warehouse Availability")
 
-# Create a scrollable log container
+# Scrollable log container
 log_container = st.empty()
 log_lines = []
 
 def log(message):
     """Add message to log container"""
     log_lines.append(message)
-    # Display in a small scrollable area
-    log_container.text_area("Scraper Log", value="\n".join(log_lines), height=200, max_chars=None)
+    log_container.text_area("Scraper Log", value="\n".join(log_lines), height=250, max_chars=None)
 
 if st.button("Run Scraper"):
     st.info("Scraping in progress... this may take a few minutes")
-    
-    # Example: pass log callback to your scraper if needed
-    df_compare, both_available = run_scraper(log_callback=log)
-    
-    st.success("Scraping complete!")
-    
-    # Show dataframe
+
+    # Use spinner while scraping
+    with st.spinner("Scraper is running..."):
+        try:
+            df_compare, both_available = run_scraper(log_callback=log)
+            st.success("Scraping complete!")
+        except Exception as e:
+            st.error(f"Scraper failed: {e}")
+            raise e
+
+    # Display main dataframe
+    st.subheader("Full Warehouse Comparison")
     st.dataframe(df_compare)
-    
-    # Prepare output folder
+
+    # Display both-available products
+    st.subheader("Products Available in Both LA & Seattle")
+    st.dataframe(both_available)
+
+    # Prepare output folder and save Excel
     os.makedirs("output", exist_ok=True)
     output_file = os.path.join("output", "warehouse_availability_LASAV3.xlsx")
-    df_compare.to_excel(output_file, index=False)
-    
+    with pd.ExcelWriter(output_file, engine='xlsxwriter') as writer:
+        df_compare.to_excel(writer, sheet_name="All Products", index=False)
+        both_available.to_excel(writer, sheet_name="Both Available", index=False)
+
     # Add download button
     with open(output_file, "rb") as f:
         st.download_button(
-            label="Download Excel",
+            label="Download Excel Report",
             data=f,
             file_name="warehouse_availability_report.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
+
+    st.info("Excel report generated and ready to download.")
