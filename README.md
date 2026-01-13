@@ -1,4 +1,4 @@
-```markdown
+
 # Wilsonart Scraper
 
 Scraper and availability checker for Wilsonart business site (LA and Seattle warehouses).  
@@ -93,4 +93,4 @@ streamlit run app.py
 
 This repository is for internal use or research purposes. Please do not use data scraped from Wilsonart for commercial purposes without permission.
 
-```
+
