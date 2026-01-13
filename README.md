@@ -1,5 +1,3 @@
-
-
 ```markdown
 # Wilsonart Scraper
 
@@ -94,10 +92,5 @@ streamlit run app.py
 ## License
 
 This repository is for internal use or research purposes. Please do not use data scraped from Wilsonart for commercial purposes without permission.
-
-```
-
----
-
 
 ```
