@@ -256,25 +256,49 @@ warehouse_la = get_vendor_availability(partnumbers_la, warehouse="LA", inforid=1
 
 
 #======================================================================================================
-warehouse_sa.rename(columns = {'Vendor Product':'VendPartNumber'},inplace = True)
-df_results_sa = warehouse_sa.merge(sa,on = 'VendPartNumber',how = 'left')
+# ================= MERGE AVAILABILITY + PRODUCT DATA =================
 
-duplicates_all_sa_new1 = df_results_sa[df_results_sa.duplicated(keep=False)]
+# --- SA ---
+warehouse_sa.rename(columns={'Vendor Product': 'VendPartNumber'}, inplace=True)
+df_results_sa = warehouse_sa.merge(sa, on='VendPartNumber', how='left')
 
+# Optional: inspect duplicates
+duplicates_sa = df_results_sa[df_results_sa.duplicated(keep=False)]
 
+# --- LA ---
+warehouse_la.rename(columns={'Vendor Product': 'VendPartNumber'}, inplace=True)
+df_results_la = warehouse_la.merge(la, on='VendPartNumber', how='left')
 
-warehouse_la.rename(columns = {'Vendor Product':'VendPartNumber'},inplace = True)
-df_results_la = warehouse_la.merge(la,on = 'VendPartNumber',how = 'left')
+# Optional: inspect duplicates
+duplicates_la = df_results_la[df_results_la.duplicated(keep=False)]
 
-duplicates_all_sa_new1 = df_results_la[df_results_la.duplicated(keep=False)]
+# ================= DYNAMIC COLUMN FILTERING =================
 
+BASE_COLS = [
+    'VendPartNumber',
+    'DesignID',
+    'DesignName',
+    'Grade',
+    'FinishID',
+    'Finish',
+    'SizeDescription',
+    'ProductType',
+    'Current Availability',
+    'Quantity on Order',
+    'Quantity on Backorder'
+]
 
-df_results_sa_filtered=df_results_sa[['VendPartNumber', 'DesignID', 'DesignName', 'Grade', 'FinishID', 'Finish', 'SizeDescription', 'ProductType',
-                                     'Current Availability', 'Quantity on Order', 'Quantity on Backorder',  'Arrival Dates1', 
-                                      'Arrival Dates2', 'Arrival Dates3', 'Arrival Dates4', 'Arrival Dates5']]
-df_results_la_filtered=df_results_la[['VendPartNumber', 'DesignID', 'DesignName', 'Grade', 'FinishID', 'Finish', 'SizeDescription', 'ProductType',
-                               'Current Availability', 'Quantity on Order', 'Quantity on Backorder', 'Arrival Dates1', 
-                               'Arrival Dates2', 'Arrival Dates3', 'Arrival Dates4', 'Arrival Dates5']] 
+def filter_with_arrival_dates(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Keep base columns and dynamically include all Arrival Dates columns.
+    Safe against missing Arrival Dates4/5/etc.
+    """
+    arrival_cols = [c for c in df.columns if c.startswith('Arrival Dates')]
+    final_cols = BASE_COLS + arrival_cols
+    return df[[c for c in final_cols if c in df.columns]].copy()
+
+df_results_sa_filtered = filter_with_arrival_dates(df_results_sa)
+df_results_la_filtered = filter_with_arrival_dates(df_results_la)
 
 
 #=====================================
