@@ -4,4 +4,4 @@ requests
 beautifulsoup4
 lxml
 openpyxl
-streamlit   # only for the UI layer later
+streamlit
