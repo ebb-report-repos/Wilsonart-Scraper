@@ -356,21 +356,14 @@ size_mapping_df = pd.DataFrame({
 })
 #================================================================
 
+# Normalize SizeDescription in mapping table
 size_mapping_df['SizeDescription'] = (
-    df_sizes['Size']
+    size_mapping_df['SizeDescription']
     .str.replace('X', ' X ', regex=False)
     .str.replace(r'\s+', ' ', regex=True)
     .str.strip()
 )
 
-
-size_mapping_correct = pd.Series(
-    index=size_mapping.values,  # sizes become index
-    data=size_mapping.index     # codes become values
-)
-
-size_mapping_df = size_mapping_correct.reset_index()
-size_mapping_df.columns = ['SizeDescription', 'Size']
 #=================both df's cleaning size description===================
 df_results_la_filtered['SizeDescription'] = (
     df_results_la_filtered['SizeDescription']
