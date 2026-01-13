@@ -1,0 +1,33 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter
+.ipynb_checkpoints
+
+# Environment / dependencies
+.env
+venv/
+env/
+*.egg-info/
+*.egg
+pip-log.txt
+pip-delete-this-directory.txt
+
+# VSCode / IDE settings
+.vscode/
+.idea/
+
+# Excel / outputs
+output/
+*.xlsx
+*.xls
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
