@@ -412,4 +412,4 @@ def run_scraper(log_callback=None):
     
 
 
-return df_compare, both_available 
+    return df_compare, both_available 
