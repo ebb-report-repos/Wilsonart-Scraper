@@ -512,23 +512,37 @@ df_compare["SizeDescription_SA"] = df_compare["SizeDescription_SA"].fillna(df_co
 df_compare["Size_LA"] = df_compare["Size_LA"].fillna(df_compare["Size"])
 df_compare["Size_SA"] = df_compare["Size_SA"].fillna(df_compare["Size"])
 #=====================================================================
-df_compare=df_compare[['PartNumber','VendPartNumber', 'DesignID', 'DesignName_LA', 'Grade', 'FinishID','SizeDescription', 'Size',
-                       'Finish_LA', 'ProductType_LA', 'Availability_LA', 'OnOrder_LA',
-                       'Backorder_LA', 'Arrival Dates1_LA', 'Arrival Dates2_LA', 'Arrival Dates3_LA',
-                       'Arrival Dates4_LA', 'Arrival Dates5_LA', 'DesignName_SA', 'Finish_SA', 
-                       'ProductType_SA', 'Availability_SA', 'OnOrder_SA', 'Backorder_SA', 'Arrival Dates1_SA', 'Arrival Dates2_SA',
-                       'Arrival Dates3_SA', 'Arrival Dates4_SA', 'Arrival Dates5_SA', 'In_LA',
-                       'In_SA', 'Available_LA', 'Available_SA', 'Total_Availability', 'Availability_Status']]
+# df_compare=df_compare[['PartNumber','VendPartNumber', 'DesignID', 'DesignName_LA', 'Grade', 'FinishID','SizeDescription', 'Size',
+#                        'Finish_LA', 'ProductType_LA', 'Availability_LA', 'OnOrder_LA',
+#                        'Backorder_LA', 'Arrival Dates1_LA', 'Arrival Dates2_LA', 'Arrival Dates3_LA',
+#                        'Arrival Dates4_LA', 'Arrival Dates5_LA', 'DesignName_SA', 'Finish_SA', 
+#                        'ProductType_SA', 'Availability_SA', 'OnOrder_SA', 'Backorder_SA', 'Arrival Dates1_SA', 'Arrival Dates2_SA',
+#                        'Arrival Dates3_SA', 'Arrival Dates4_SA', 'Arrival Dates5_SA', 'In_LA',
+#                        'In_SA', 'Available_LA', 'Available_SA', 'Total_Availability', 'Availability_Status']]
 
 
-both_available=both_available[['PartNumber','VendPartNumber', 'DesignID', 'DesignName_LA', 'Grade', 'FinishID','SizeDescription', 'Size',
-                       'Finish_LA', 'ProductType_LA', 'Availability_LA', 'OnOrder_LA',
-                       'Backorder_LA', 'Arrival Dates1_LA', 'Arrival Dates2_LA', 'Arrival Dates3_LA',
-                       'Arrival Dates4_LA', 'Arrival Dates5_LA', 'DesignName_SA', 'Finish_SA', 
-                       'ProductType_SA', 'Availability_SA', 'OnOrder_SA', 'Backorder_SA', 'Arrival Dates1_SA', 'Arrival Dates2_SA',
-                       'Arrival Dates3_SA', 'Arrival Dates4_SA', 'Arrival Dates5_SA', 'In_LA',
-                       'In_SA', 'Available_LA', 'Available_SA', 'Total_Availability', 'Availability_Status']]
+# both_available=both_available[['PartNumber','VendPartNumber', 'DesignID', 'DesignName_LA', 'Grade', 'FinishID','SizeDescription', 'Size',
+#                        'Finish_LA', 'ProductType_LA', 'Availability_LA', 'OnOrder_LA',
+#                        'Backorder_LA', 'Arrival Dates1_LA', 'Arrival Dates2_LA', 'Arrival Dates3_LA',
+#                        'Arrival Dates4_LA', 'Arrival Dates5_LA', 'DesignName_SA', 'Finish_SA', 
+#                        'ProductType_SA', 'Availability_SA', 'OnOrder_SA', 'Backorder_SA', 'Arrival Dates1_SA', 'Arrival Dates2_SA',
+#                        'Arrival Dates3_SA', 'Arrival Dates4_SA', 'Arrival Dates5_SA', 'In_LA',
+#                        'In_SA', 'Available_LA', 'Available_SA', 'Total_Availability', 'Availability_Status']]
+# Base columns that are always expected
+base_cols = ['PartNumber','VendPartNumber', 'DesignID', 'DesignName_LA', 'Grade', 'FinishID','SizeDescription', 'Size',
+             'Finish_LA', 'ProductType_LA', 'Availability_LA', 'OnOrder_LA','Backorder_LA',
+             'DesignName_SA', 'Finish_SA', 'ProductType_SA', 'Availability_SA', 'OnOrder_SA', 
+             'Backorder_SA', 'In_LA', 'In_SA', 'Available_LA', 'Available_SA', 'Total_Availability', 'Availability_Status']
 
+# Dynamically find all arrival date columns
+arrival_cols = [col for col in df_compare.columns if 'Arrival Dates' in col]
+
+# Combine them
+final_cols = base_cols + arrival_cols
+
+# Reorder the DataFrame dynamically
+df_compare = df_compare[[col for col in final_cols if col in df_compare.columns]]
+both_available = both_available[[col for col in final_cols if col in both_available.columns]]
 
 #====================================================================
 import os  # add at the top of your script if not already imported
