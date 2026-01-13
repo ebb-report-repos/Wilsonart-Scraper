@@ -1,9 +1,16 @@
+# Data handling
 pandas
 numpy
+openpyxl
+
+# Web requests and parsing
 requests
 beautifulsoup4
 lxml
-openpyxl
+
+# Web UI
 streamlit
+
+# Optional: only if you want to use Selenium in the future
 selenium
 webdriver-manager
