@@ -317,8 +317,8 @@ def run_scraper(log_callback=None):
     #==============================creating/combining part number from multiple columns =======================================
     for df_filtered in [df_results_sa_filtered, df_results_la_filtered]:
         df_filtered['PartNumber'] = (df_filtered['DesignID'].astype(str) + '-' +
-                                     df_filtered['Grade'].astype(str) + '-' +
-                                     df_filtered['FinishID'].astype(str) +
+                                     df_filtered['FinishID'].astype(str) + '-' +
+                                     df_filtered['Grade'].astype(str) +
                                      df_filtered['Size'].astype(str))
     
     #==================================================================
