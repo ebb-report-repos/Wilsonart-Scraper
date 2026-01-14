@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 from main import run_scraper  # Your scraping logic wrapped as a function
-
+import datetime
 st.set_page_config(page_title="Wilsonart Warehouse Availability", layout="wide")
 st.title("Wilsonart Warehouse Availability")
 
@@ -34,21 +34,44 @@ if st.button("Run Scraper"):
     # Display both-available products
     st.subheader("Products Available in Both LA & Seattle")
     st.dataframe(both_available)
-
     # Prepare output folder and save Excel
     os.makedirs("output", exist_ok=True)
-    output_file = os.path.join("output", "warehouse_availability_LASAV3.xlsx")
-    with pd.ExcelWriter(output_file, engine='xlsxwriter') as writer:
+    
+    # Short timestamp
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M")  # e.g., 20260113_1532
+    
+    # Output filename with timestamp
+    output_file = os.path.join("output", f"warehouse_availability_report_{timestamp}.xlsx")
+    
+    with pd.ExcelWriter(output_file, engine='openpyxl') as writer:  # switched from xlsxwriter
         df_compare.to_excel(writer, sheet_name="All Products", index=False)
         both_available.to_excel(writer, sheet_name="Both Available", index=False)
-
-    # Add download button
+    
+    # Add download button with timestamp in filename
     with open(output_file, "rb") as f:
         st.download_button(
             label="Download Excel Report",
             data=f,
-            file_name="warehouse_availability_report.xlsx",
+            file_name=f"warehouse_availability_report_{timestamp}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
-
+    
     st.info("Excel report generated and ready to download.")
+
+    # # Prepare output folder and save Excel
+    # os.makedirs("output", exist_ok=True)
+    # output_file = os.path.join("output", "warehouse_availability_report.xlsx")
+    # with pd.ExcelWriter(output_file, engine='xlsxwriter') as writer:
+    #     df_compare.to_excel(writer, sheet_name="All Products", index=False)
+    #     both_available.to_excel(writer, sheet_name="Both Available", index=False)
+
+    # # Add download button
+    # with open(output_file, "rb") as f:
+    #     st.download_button(
+    #         label="Download Excel Report",
+    #         data=f,
+    #         file_name="warehouse_availability_report.xlsx",
+    #         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    #     )
+
+    # st.info("Excel report generated and ready to download.")
