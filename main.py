@@ -135,8 +135,8 @@ def run_scraper(log_callback=None):
     df_main_sa = dfs["SEATTLE"]
     
     log_callback("\nScraping complete!")
-    log_callback("LA shape:", df_main_la.shape)
-    log_callback("Seattle shape:", df_main_sa.shape)
+    log_callback("LA shape: " + str(df_main_la.shape))
+    log_callback("Seattle shape:"+ str(df_main_sa.shape))
     #===============================================================================cleaning===================================
     ##2---------------------------------dnt----------------------------------------------
     
