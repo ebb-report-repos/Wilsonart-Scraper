@@ -99,3 +99,27 @@ if st.button("Run Scraper"):
     #     )
 
     # st.info("Excel report generated and ready to download.")
+
+
+    # ----------------------------
+    # Allow downloading past reports
+    # ----------------------------
+    st.subheader("Download Past Reports")
+    output_folder = "output"
+    if os.path.exists(output_folder):
+        output_files = sorted(os.listdir(output_folder), reverse=True)  # newest first
+        if output_files:
+            for file in output_files:
+                file_path = os.path.join(output_folder, file)
+                with open(file_path, "rb") as f:
+                    st.download_button(
+                        label=f"Download {file}",
+                        data=f,
+                        file_name=file,
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    )
+        else:
+            st.info("No reports found in the output folder.")
+    else:
+        st.info("Output folder does not exist yet.")
+
