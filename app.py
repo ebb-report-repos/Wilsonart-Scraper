@@ -1,58 +1,76 @@
-import streamlit as st
-import pandas as pd
-import os
-import io
-from main import run_scraper  # Your scraping logic wrapped as a function
-import datetime
-
-
-
-
-
+# app.py
 import streamlit as st
 import requests
 
 # ----------------------------
-# Streamlit page config
+# Streamlit Page Config
 # ----------------------------
 st.set_page_config(page_title="Wilsonart Warehouse Availability", layout="wide")
 st.title("Wilsonart Warehouse Availability")
 
 # ----------------------------
-# Trigger GitHub Actions scraper
+# Helper Function: Trigger GitHub Actions Scraper
+# ----------------------------
+def trigger_github_workflow():
+    """
+    Trigger the GitHub Actions workflow for the Wilsonart scraper.
+    Returns a tuple: (success: bool, message: str)
+    """
+    try:
+        repo = st.secrets.REPO
+        token = st.secrets.GITHUB_TOKEN
+    except KeyError:
+        return False, "❌ GitHub secrets not found. Add REPO and GITHUB_TOKEN to .streamlit/secrets.toml"
+
+    workflow_url = f"https://api.github.com/repos/{repo}/actions/workflows/wilsonart_scraper.yml/dispatches"
+    payload = {"ref": "main"}
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github+json"
+    }
+
+    try:
+        response = requests.post(workflow_url, json=payload, headers=headers)
+        if response.status_code == 204:
+            return True, (
+                "✅ Scraper started successfully!\n\n"
+                "The process runs on GitHub and can take up to 2 hours.\n"
+                "Once finished, download the Excel report from the Actions artifacts:\n"
+                f"https://github.com/{repo}/actions/workflows/wilsonart_scraper.yml"
+            )
+        else:
+            return False, f"❌ Failed to start scraper. Status code: {response.status_code}\nResponse: {response.text}"
+    except Exception as e:
+        return False, f"❌ Error triggering scraper: {e}"
+
+# ----------------------------
+# Run Scraper Section
 # ----------------------------
 st.header("Run Scraper")
 st.markdown(
     "Click the button below to start the warehouse scraper. "
-    "This process runs on GitHub and can take up to 2 hours. "
-    "You can close this page and come back later to download the report."
+    "This runs asynchronously on GitHub, so you do not need to keep this page open."
 )
 
 if st.button("Run Scraper"):
-    try:
-        response = requests.post(
-            f"https://api.github.com/repos/{st.secrets.REPO}/actions/workflows/wilsonart_scraper.yml/dispatches",
-            headers={
-                "Authorization": f"token {st.secrets.GITHUB_TOKEN}",
-                "Accept": "application/vnd.github+json"
-            },
-            json={"ref": "main"}
-        )
-
-        if response.status_code == 204:
-            st.success("✅ Scraper started successfully! Check back in ~2 hours to download the report.")
-        else:
-            st.error(f"❌ Failed to start scraper. Status code: {response.status_code}")
-    except Exception as e:
-        st.error(f"❌ Error triggering scraper: {e}")
+    success, message = trigger_github_workflow()
+    if success:
+        st.success(message)
+    else:
+        st.error(message)
 
 # ----------------------------
-# Placeholder for future download
+# Download Instructions Section
 # ----------------------------
 st.header("Download Latest Report")
 st.info(
-    "Once the scraper finishes, the Excel report will be available here. "
-    "Currently, download must be done from GitHub Actions artifacts."
+    "Once the scraper finishes, the Excel report (with two sheets: "
+    "`All Products` and `Both Available`) will be available from GitHub Actions artifacts.\n\n"
+    "You can download it directly from the workflow run page once the job completes."
+)
+
+st.markdown(
+    "🔗 [Go to GitHub Actions Artifacts](https://github.com/{repo}/actions/workflows/wilsonart_scraper.yml)"
 )
 
 
