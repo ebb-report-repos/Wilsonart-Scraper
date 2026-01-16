@@ -48,38 +48,38 @@ if st.button("Run Scraper"):
         df_compare.to_excel(writer, sheet_name="All Products", index=False)
         both_available.to_excel(writer, sheet_name="Both Available", index=False)
     
-    # # Add download button with timestamp in filename
-    # with open(output_file, "rb") as f:
-    #     st.download_button(
-    #         label="Download Excel Report",
-    #         data=f,
-    #         file_name=f"warehouse_availability_report_{timestamp}.xlsx",
-    #         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    #     )
+    # Add download button with timestamp in filename
+    with open(output_file, "rb") as f:
+        st.download_button(
+            label="Download Excel Report",
+            data=f,
+            file_name=f"warehouse_availability_report_{timestamp}.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
     
-    # st.info("Excel report generated and ready to download.")
+    st.info("Excel report generated and ready to download.")
 
 
     # Add download button with timestamp in filename (using in-memory Excel for reliability)
     
     
-    # Prepare Excel in memory
-    excel_buffer = io.BytesIO()
-    with pd.ExcelWriter(excel_buffer, engine='openpyxl') as writer:
-        df_compare.to_excel(writer, sheet_name="All Products", index=False)
-        both_available.to_excel(writer, sheet_name="Both Available", index=False)
-    excel_buffer.seek(0)  # Move pointer to the start
+    # # Prepare Excel in memory
+    # excel_buffer = io.BytesIO()
+    # with pd.ExcelWriter(excel_buffer, engine='openpyxl') as writer:
+    #     df_compare.to_excel(writer, sheet_name="All Products", index=False)
+    #     both_available.to_excel(writer, sheet_name="Both Available", index=False)
+    # excel_buffer.seek(0)  # Move pointer to the start
     
-    # Show download button immediately
-    st.download_button(
-        label="Download Excel Report",
-        data=excel_buffer,
-        file_name=f"warehouse_availability_report_{timestamp}.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+    # # Show download button immediately
+    # st.download_button(
+    #     label="Download Excel Report",
+    #     data=excel_buffer,
+    #     file_name=f"warehouse_availability_report_{timestamp}.xlsx",
+    #     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    # )
     
-    # Inform user that file is ready and also saved on disk
-    st.info(f"Excel report saved to disk at: {output_file} and ready to download.")
+    # # Inform user that file is ready and also saved on disk
+    # st.info(f"Excel report saved to disk at: {output_file} and ready to download.")
 
 
     # # Prepare output folder and save Excel
