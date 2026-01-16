@@ -16,7 +16,7 @@ def run_scraper(log_callback=None):
 
 
     
-    NUM_PAGES = 21  # number of pages to scrape
+    NUM_PAGES = 1  # number of pages to scrape
     
     ZIPCODES = {
         "LA": "90058",       # Santa Fe Springs
