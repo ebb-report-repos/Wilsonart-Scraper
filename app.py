@@ -70,8 +70,8 @@ st.info(
 )
 
 st.markdown(
-    "🔗 [Go to GitHub Actions Artifacts](https://github.com/{repo}/actions/workflows/wilsonart_scraper.yml)"
-)
+    " [Go to GitHub Actions Artifacts](https://github.com/ebb-report-repos/Wilsonart-Scraper/actions/workflows/wilsonart_scraper.yml)"
+)                                      
 
 
 # if st.button("Run Scraper"):
