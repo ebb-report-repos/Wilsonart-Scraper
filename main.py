@@ -1,4 +1,6 @@
 def run_scraper(log_callback=None):
+    log_callback = log_callback or (lambda msg: None)
+
 
     import pandas as pd
     import numpy as np
