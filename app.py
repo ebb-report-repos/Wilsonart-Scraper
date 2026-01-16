@@ -5,6 +5,25 @@ import io
 from main import run_scraper  # Your scraping logic wrapped as a function
 import datetime
 
+
+import requests
+
+if st.button("Run Scraper"):
+    response = requests.post(
+        f"https://api.github.com/repos/{st.secrets.REPO}/actions/workflows/wilsonart_scraper.yml/dispatches",
+        headers={
+            "Authorization": f"token {st.secrets.GITHUB_TOKEN}",
+            "Accept": "application/vnd.github+json"
+        },
+        json={"ref": "main"}
+    )
+
+    if response.status_code == 204:
+        st.success("Scraper started successfully. Check back in ~2 hours.")
+    else:
+        st.error("Failed to start scraper.")
+
+
 st.set_page_config(page_title="Wilsonart Warehouse Availability", layout="wide")
 st.title("Wilsonart Warehouse Availability")
 
@@ -33,31 +52,31 @@ def log(message):
         max_chars=None
     )
 
-# ----------------------------
-# Run scraper
-# ----------------------------
-if st.button("Run Scraper") or st.session_state.scraper_ran:
-    if not st.session_state.scraper_ran:
-        st.info("Scraping in progress... this may take a few minutes")
-        with st.spinner("Scraper is running..."):
-            try:
-                df_compare, both_available = run_scraper(log_callback=log)
-                st.session_state.df_compare = df_compare
-                st.session_state.both_available = both_available
-                st.session_state.scraper_ran = True
-                st.success("Scraping complete!")
-            except Exception as e:
-                st.error(f"Scraper failed: {e}")
-                raise e
+# # ----------------------------
+# # Run scraper
+# # ----------------------------
+# if st.button("Run Scraper") or st.session_state.scraper_ran:
+#     if not st.session_state.scraper_ran:
+#         st.info("Scraping in progress... this may take a few minutes")
+#         with st.spinner("Scraper is running..."):
+#             try:
+#                 df_compare, both_available = run_scraper(log_callback=log)
+#                 st.session_state.df_compare = df_compare
+#                 st.session_state.both_available = both_available
+#                 st.session_state.scraper_ran = True
+#                 st.success("Scraping complete!")
+#             except Exception as e:
+#                 st.error(f"Scraper failed: {e}")
+#                 raise e
 
-    # ----------------------------
-    # Display results
-    # ----------------------------
-    st.subheader("Full Warehouse Comparison")
-    st.dataframe(st.session_state.df_compare)
+#     # ----------------------------
+#     # Display results
+#     # ----------------------------
+#     st.subheader("Full Warehouse Comparison")
+#     st.dataframe(st.session_state.df_compare)
 
-    st.subheader("Products Available in Both LA & Seattle")
-    st.dataframe(st.session_state.both_available)
+#     st.subheader("Products Available in Both LA & Seattle")
+#     st.dataframe(st.session_state.both_available)
 
     # ----------------------------
     # Save Excel to disk
