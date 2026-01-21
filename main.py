@@ -89,30 +89,59 @@ def run_scraper(log_callback=None):
 
                 # -------------------Iterate -----------------
 
+                for product_type in prototypes:
+
+                    # normalize to iterable of dicts
+                    product_types = product_type if isinstance(product_type, list) else [product_type]
+                
+                    for pt in product_types:
+                        grade = pt.get("name", "")
+                
+                        for finish in pt.get("finishes", []):
+                            finish_name = finish.get("name", "")
+                            for size in finish.get("sizes", []):
+                                size_desc = size.get("name", "")
+                                for part in size.get("partnumber", []):
+                                    vend_part_number = str(part.get("name") or "")
+                
+                                    design_id_match = re.match(r"(\d{4,6})", vend_part_number)
+                                    design_id = design_id_match.group(1) if design_id_match else ""
+                
+                                    data.append([
+                                        design_id,
+                                        design_name,
+                                        vend_part_number,
+                                        grade,
+                                        "",
+                                        finish_name,
+                                        size_desc
+                                    ])
+
+
                
     
-                # ---------------- Iterate ----------------
-                for product_type in prototypes:
-                    grade = product_type.get("name", "")
-                    for finish in product_type.get("finishes", []):
-                        finish_name = finish.get("name", "")
-                        for size in finish.get("sizes", []):
-                            size_desc = size.get("name", "")
-                            for part in size.get("partnumber", []):
-                                vend_part_number = str(part.get("name") or "")
+            #     # ---------------- Iterate ----------------
+            #     for product_type in prototypes:
+            #         grade = product_type.get("name", "")
+            #         for finish in product_type.get("finishes", []):
+            #             finish_name = finish.get("name", "")
+            #             for size in finish.get("sizes", []):
+            #                 size_desc = size.get("name", "")
+            #                 for part in size.get("partnumber", []):
+            #                     vend_part_number = str(part.get("name") or "")
     
-                                design_id_match = re.match(r"(\d{4,6})", vend_part_number)
-                                design_id = design_id_match.group(1) if design_id_match else ""
+            #                     design_id_match = re.match(r"(\d{4,6})", vend_part_number)
+            #                     design_id = design_id_match.group(1) if design_id_match else ""
     
-                                data.append([
-                                    design_id,
-                                    design_name,
-                                    vend_part_number,
-                                    grade,
-                                    "",
-                                    finish_name,
-                                    size_desc
-                                ])
+            #                     data.append([
+            #                         design_id,
+            #                         design_name,
+            #                         vend_part_number,
+            #                         grade,
+            #                         "",
+            #                         finish_name,
+            #                         size_desc
+            #                     ])
     
             # -------- Deley--------
             time.sleep(0.3)
