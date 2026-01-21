@@ -16,9 +16,13 @@ streamlit
 selenium
 webdriver-manager
 # Prevent Altair installation
-streamlit==1.26.1
+
 altair==4.2.2
+
+
+streamlit>=1.53
 pillow==12.1.0
+
 
 
 
