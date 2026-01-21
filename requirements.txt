@@ -12,6 +12,6 @@ lxml
 # Web UI
 streamlit
 
-# Optional: only if you want to use Selenium in the future
+# Optional: only if you want Selenium
 selenium
 webdriver-manager
