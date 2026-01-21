@@ -151,7 +151,10 @@ def run_scraper(log_callback=None):
         df = pd.DataFrame(data, columns=columns)
     
         # Clean strings
-        df = df.applymap(lambda x: x.strip().upper() if isinstance(x, str) else x)
+        #df = df.applymap(lambda x: x.strip().upper() if isinstance(x, str) else x)
+        df = df.apply(lambda col: col.astype(str).str.strip().str.upper())
+
+
     
         # Split Grade / ProductType
         df['ProductType'] = df['Grade'].str.split(' ').str[1]
