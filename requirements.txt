@@ -16,4 +16,5 @@ streamlit
 selenium
 webdriver-manager
 # Prevent Altair installation
-altair==0.0.0
+altair>=5.0.0
+
