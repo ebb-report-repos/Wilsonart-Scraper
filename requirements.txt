@@ -15,3 +15,5 @@ streamlit
 # Optional: only if you want Selenium
 selenium
 webdriver-manager
+# Prevent Altair installation
+altair==0.0.0
